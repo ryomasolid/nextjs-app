@@ -1,6 +1,6 @@
 "use client";
 
-import { LoginDto } from "@/app/libs/login/loginDto";
+import { Login_Params } from "@/app/types/login";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,7 +8,8 @@ import { useState } from "react";
 export default function LoginPage() {
   const router = useRouter();
 
-  const [loginForm, setLoginForm] = useState<LoginDto>();
+  const [loginForm, setLoginForm] = useState<Login_Params>();
+  const [isError, setIsError] = useState<boolean>(false);
 
   const onChangeEmail = (value: string) => {
     setLoginForm({ ...loginForm, email: value });
@@ -19,12 +20,14 @@ export default function LoginPage() {
   };
 
   const handleLogin = () => {
+    setIsError(false)
     if (!loginForm?.email || !loginForm?.password) {
+      setIsError(true)
       return;
     }
 
     // ログイン処理を実行
-    router.push("/home");
+    router.push("/features/home");
   };
 
   return (
@@ -55,6 +58,9 @@ export default function LoginPage() {
         value={loginForm?.password}
         onChange={(e) => onChangePassword(e.target.value)}
       />
+      {isError && <Typography color="error" sx={{fontSize: '11px'}}>
+        メールアドレスとパスワードを入力してください
+      </Typography>}
       <Button
         variant="contained"
         color="primary"

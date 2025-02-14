@@ -2,9 +2,9 @@
 
 import { Box, Tab, Tabs } from "@mui/material";
 import { useState } from "react";
-import ChatgptPage from "./chatgpt";
-import GooglePage from "./google";
-import HonyakuPage from "./honyaku";
+import ChatgptPage from "../chatgpt/page";
+import GooglePage from "../google/page";
+import HonyakuPage from "../honyaku/page";
 
 export default function HomePage() {
   const [currentTab, setCurrentTab] = useState<string>("1");
