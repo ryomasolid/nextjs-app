@@ -1,120 +1,91 @@
-"use client";
+"use client"
 
-import {
-  TranslateClient,
-  TranslateTextCommand,
-} from "@aws-sdk/client-translate";
-import AutorenewIcon from "@mui/icons-material/Autorenew";
-import {
-  Box,
-  CircularProgress,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
-import { ChangeEvent, useEffect, useState } from "react";
-import useSWRMutation from "swr/mutation";
-import TextArea from "./_components/TextArea";
+import AutorenewIcon from "@mui/icons-material/Autorenew"
+import { Box, MenuItem, Select, Typography } from "@mui/material"
+import { ChangeEvent, useEffect, useState } from "react"
+import TextArea from "./_components/TextArea"
 
 export default function HonyakuPage() {
-  const [isChanged, setIsChanged] = useState<boolean>(false);
-
-  const [comment1, setComment1] = useState<string>("");
-  const [comment2, setComment2] = useState<string>("");
+  const [isChanged, setIsChanged] = useState<boolean>(false)
+  const [comment1, setComment1] = useState<string>("")
+  const [comment2, setComment2] = useState<string>("")
+  const [error, setError] = useState<string | null>(null)
 
   const handleClick = () => {
-    setIsChanged(!isChanged);
-  };
+    setIsChanged(!isChanged)
+  }
 
   const handleChangeComment1 = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setComment1(event.target.value);
-  };
+    setComment1(event.target.value)
+  }
 
-  const translateClient = new TranslateClient({
-    region: process.env.NEXT_PUBLIC_AWS_REGION,
-    credentials: {
-      accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID!,
-      secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
-    },
-  });
-  const translateText = async (
-    _key: string,
-    { arg }: { arg: { text: string } }
-  ) => {
-    const command = new TranslateTextCommand({
-      Text: arg.text,
-      SourceLanguageCode: isChanged ? "ja" : "en",
-      TargetLanguageCode: isChanged ? "en" : "ja",
-    });
+  const translateText = async (text: string) => {
+    try {
+      const response = await fetch("/api/translate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text,
+          sourceLang: isChanged ? "ja" : "en",
+          targetLang: isChanged ? "en" : "ja",
+        }),
+      })
 
-    const response = await translateClient.send(command);
-    return response.TranslatedText;
-  };
-  const { trigger, data, error, isMutating } = useSWRMutation(
-    "translate",
-    translateText
-  );
+      const data = await response.json()
+      if (!response.ok) {
+        throw new Error(data.error || "Translation error")
+      }
+      setComment2(data.translatedText)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error")
+    }
+  }
 
   useEffect(() => {
-    if (!data) {
-      return;
+    if (comment1) {
+      console.log('aaa')
+      translateText(comment1)
     }
-
-    setComment2(data);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  useEffect(() => {
-    if (!comment1) {
-      return;
-    }
-
-    trigger({ text: comment1 });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [comment1]);
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [comment1])
 
   return (
-    <>
-      {isMutating && <CircularProgress />}
+    <Box>
+      <Typography>{error}</Typography>
 
-      <Box>
-        <Typography>{isMutating ? "翻訳中..." : "翻訳"}</Typography>
-        <Typography>{error && error.message}</Typography>
-
-        <Box
-          display="flex"
-          justifyContent="center"
-          columnGap="2vw"
-          alignItems="center"
-          mt="3vh"
-        >
-          <Box display="flex" flexDirection="column" rowGap="2vh">
-            <Select value={"1"} sx={{ width: "15vw", height: "8vh" }}>
-              <MenuItem value={1}>{isChanged ? "日本語" : "英語"}</MenuItem>
-            </Select>
-            <TextArea
-              value={comment1}
-              onChange={handleChangeComment1}
-              sx={{ height: "30vh !important" }}
-            />
-          </Box>
-          <Box display="flex" flexDirection="column">
-            <AutorenewIcon onClick={handleClick} />
-          </Box>
-          <Box display="flex" flexDirection="column" rowGap="2vh">
-            <Select value={"1"} sx={{ width: "15vw", height: "8vh" }}>
-              <MenuItem value={1}>{isChanged ? "英語" : "日本語"}</MenuItem>
-            </Select>
-            <TextArea
-              value={comment2}
-              disabled
-              sx={{ height: "30vh !important" }}
-            />
-          </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        columnGap="2vw"
+        alignItems="center"
+        mt="3vh"
+      >
+        <Box display="flex" flexDirection="column" rowGap="2vh">
+          <Select value={"1"} disabled sx={{ width: "15.5vw", height: "5vh" }}>
+            <MenuItem value={1}>{isChanged ? "日本語" : "英語"}</MenuItem>
+          </Select>
+          <TextArea
+            value={comment1}
+            onChange={handleChangeComment1}
+            sx={{ height: "30vh !important" }}
+          />
+        </Box>
+        <Box display="flex" flexDirection="column">
+          <AutorenewIcon onClick={handleClick} />
+        </Box>
+        <Box display="flex" flexDirection="column" rowGap="2vh">
+          <Select value={"1"} disabled sx={{ width: "15.5vw", height: "5vh" }}>
+            <MenuItem value={1}>{isChanged ? "英語" : "日本語"}</MenuItem>
+          </Select>
+          <TextArea
+            value={comment2}
+            disabled
+            sx={{ height: "30vh !important" }}
+          />
         </Box>
       </Box>
-    </>
-  );
+    </Box>
+  )
 }
