@@ -8,7 +8,10 @@ const nextConfig = {
       },
     ],
   },
-  output: 'export',
+  experimental: {
+    appDir: true, // appディレクトリを使用している場合
+  },
+  // output: 'export' を削除
 };
 
 export default nextConfig;
