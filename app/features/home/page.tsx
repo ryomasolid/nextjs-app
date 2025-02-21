@@ -5,6 +5,7 @@ import { useState } from "react";
 import ChatgptPage from "../chatgpt/page";
 import GooglePage from "../google/page";
 import HonyakuPage from "../honyaku/page";
+import BackupPage from "../backup/page";
 
 export default function HomePage() {
   const [currentTab, setCurrentTab] = useState<string>("1");
@@ -21,6 +22,7 @@ export default function HomePage() {
             <Tab label="Google" value="2" />
             <Tab label="ChatGPT" value="3" />
             <Tab label="Honyaku" value="4" />
+            <Tab label="Backup" value="5" />
           </Tabs>
         </Box>
         <Box sx={{ height: "50vh" }}>
@@ -28,6 +30,7 @@ export default function HomePage() {
           {currentTab === "2" && <GooglePage />}
           {currentTab === "3" && <ChatgptPage />}
           {currentTab === "4" && <HonyakuPage />}
+          {currentTab === "5" && <BackupPage />}
         </Box>
       </Box>
     </>
