@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ translatedText: response.TranslatedText });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error('Translation error:', error);
+    console.error('Translation error:', error + translateClient + 'あああ');
     return NextResponse.json(
       { error: `Translation failed: ${error.message || error}` },
       { status: 500 }
