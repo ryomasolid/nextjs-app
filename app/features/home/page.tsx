@@ -6,9 +6,13 @@ import HonyakuPage from '../honyaku/page';
 import BackupPage from '../backup/page';
 import { TimerPage } from '../timer/page';
 import { MemoPage, Note } from '../memo/page';
+import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 export default function HomePage() {
   const [currentTab, setCurrentTab] = useState<string>('1');
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
 
   // タイマーページ用
   const [time, setTime] = useState(60);
@@ -38,6 +42,7 @@ export default function HomePage() {
   const handleChange = (e: React.SyntheticEvent, value: string) => {
     setCurrentTab(value);
   };
+
   return (
     <>
       <Box px="10vw">
@@ -51,7 +56,26 @@ export default function HomePage() {
           </Tabs>
         </Box>
         <Box sx={{ height: '50vh' }}>
-          {currentTab === '1' && <Box>Home</Box>}
+          {currentTab === '1' && (
+            <Box>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <StaticDatePicker
+                  displayStaticWrapperAs="desktop"
+                  value={selectedDate}
+                  onChange={(newValue) => setSelectedDate(newValue)}
+                  sx={{
+                    '& .MuiCalendarPicker-root': {
+                      minWidth: '400px',
+                      minHeight: '400px',
+                    },
+                    '& .MuiPickersDay-root': {
+                      fontSize: '1.2rem',
+                    },
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
+          )}
           {currentTab === '2' && <HonyakuPage />}
           {currentTab === '3' && <BackupPage />}
           {currentTab === '4' && (
