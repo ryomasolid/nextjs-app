@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import HonyakuPage from '../honyaku/page';
 import BackupPage from '../backup/page';
 import { TimerPage } from '../timer/page';
+import { MemoPage, Note } from '../memo/page';
 
 export default function HomePage() {
   const [currentTab, setCurrentTab] = useState<string>('1');
@@ -13,6 +14,9 @@ export default function HomePage() {
   const [time, setTime] = useState(60);
   const [inputTime, setInputTime] = useState('60');
   const [isRunning, setIsRunning] = useState(false);
+
+  // メモページ用
+  const [notes, setNotes] = useState<Note[]>([]);
 
   useEffect(() => {
     let timer: NodeJS.Timeout;
@@ -43,6 +47,7 @@ export default function HomePage() {
             <Tab label="Honyaku" value="2" />
             <Tab label="Backup" value="3" />
             <Tab label="Timer" value="4" />
+            <Tab label="Memo" value="5" />
           </Tabs>
         </Box>
         <Box sx={{ height: '50vh' }}>
@@ -59,6 +64,7 @@ export default function HomePage() {
               setIsRunning={setIsRunning}
             />
           )}
+          {currentTab === '5' && <MemoPage notes={notes} setNotes={setNotes} />}
         </Box>
       </Box>
     </>
