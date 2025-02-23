@@ -133,7 +133,7 @@ export default function ImageUploader() {
         </Stack>
       </Dialog>
 
-      <Box>
+      <Box textAlign="center" mt="3vh">
         <Typography variant="h6" gutterBottom>
           S3へアップロード
         </Typography>
