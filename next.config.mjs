@@ -9,18 +9,18 @@ const nextConfig = {
     ],
   },
   experimental: {
-    appDir: true, // appディレクトリを使用している場合
+    appDir: true,
   },
-  // 環境変数を設定
+
   env: {
-    MY_REGION: process.env.MY_REGION, // 環境変数を追加
+    MY_REGION: process.env.MY_REGION,
   },
   serverRuntimeConfig: {
-    MY_ACCESS_KEY_ID: process.env.MY_ACCESS_KEY_ID, // サーバー側でのみ使用
-    MY_SECRET_ACCESS_KEY: process.env.MY_SECRET_ACCESS_KEY, // サーバー側でのみ使用
+    MY_ACCESS_KEY_ID: process.env.MY_ACCESS_KEY_ID,
+    MY_SECRET_ACCESS_KEY: process.env.MY_SECRET_ACCESS_KEY,
   },
   publicRuntimeConfig: {
-    MY_REGION: process.env.MY_REGION, // クライアント側で使用
+    MY_REGION: process.env.MY_REGION,
   },
 };
 
