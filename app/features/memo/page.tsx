@@ -12,17 +12,13 @@ import {
 import { useState } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export type MemoPageProps = {
-  notes: Note[];
-  setNotes: (notes: Note[]) => void;
-};
-
 export interface Note {
   id: number;
   content: string;
 }
 
-export const MemoPage: React.FC<MemoPageProps> = ({ notes, setNotes }) => {
+export default function MemoPage() {
+  const [notes, setNotes] = useState<Note[]>([]);
   const [inputValue, setInputValue] = useState('');
 
   const addNote = () => {
@@ -73,4 +69,4 @@ export const MemoPage: React.FC<MemoPageProps> = ({ notes, setNotes }) => {
       </div>
     </div>
   );
-};
+}

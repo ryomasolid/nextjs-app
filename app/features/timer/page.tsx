@@ -1,24 +1,13 @@
 'use client';
 
 import { Button, Stack, TextField, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 
-export type TimerPageProps = {
-  time: number;
-  inputTime: string;
-  isRunning: boolean;
-  setTime: (time: number) => void;
-  setInputTime: (inputTime: string) => void;
-  setIsRunning: (sRunning: boolean) => void;
-};
+export default function TimerPage() {
+  const [time, setTime] = useState(60);
+  const [inputTime, setInputTime] = useState('60');
+  const [isRunning, setIsRunning] = useState(false);
 
-export const TimerPage: React.FC<TimerPageProps> = ({
-  time,
-  inputTime,
-  isRunning,
-  setTime,
-  setInputTime,
-  setIsRunning,
-}) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputTime(event.target.value.replace(/\D/g, ''));
   };
@@ -36,6 +25,23 @@ export const TimerPage: React.FC<TimerPageProps> = ({
     setInputTime('60');
     setIsRunning(false);
   };
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isRunning && time > 0) {
+      timer = setInterval(() => {
+        setTime(time - 1);
+      }, 1000);
+    }
+
+    if (time === 0) {
+      setIsRunning(false);
+    }
+
+    return () => clearInterval(timer);
+
+    /* eslint-disable react-hooks/exhaustive-deps */
+  }, [isRunning, time]);
 
   return (
     <Stack spacing={2} alignItems="center">
@@ -74,4 +80,4 @@ export const TimerPage: React.FC<TimerPageProps> = ({
       </Stack>
     </Stack>
   );
-};
+}
